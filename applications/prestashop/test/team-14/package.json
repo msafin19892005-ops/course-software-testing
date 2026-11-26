@@ -1,7 +1,0 @@
-{
-  "name": "prestashop-team-14-fault-revealing-tests",
-  "private": true,
-  "engines": { "node": ">=20" },
-  "scripts": { "test": "node reproduce.cjs" },
-  "devDependencies": { "playwright": "1.62.1" }
-}

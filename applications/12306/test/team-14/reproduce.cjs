@@ -107,6 +107,7 @@ async function sameName(page, evidence) {
   const initial = await addPassenger(page, evidence.inputs.name, first);
   assert.equal(initial.status, 200);
   evidence.before = await passengerRows(page);
+  assert.equal(evidence.before.filter(row => row.includes(first)).length, 1);
   await screenshot(page, '01-before.png');
   const added = await addPassenger(page, evidence.inputs.name, second);
   assert.equal(added.status, 200, JSON.stringify(added.body));
@@ -227,10 +228,98 @@ async function staleInventory(page, evidence, context) {
     'The old tab opened confirmation for a class whose only seat was already locked.');
 }
 
+async function impossibleDate(page, evidence) {
+  const dates = ['2026-07-31', '2026-08-01', '2026-07-32'];
+  evidence.searches = [];
+  for (const date of dates) {
+    await page.goto(baseURL);
+    await field(page, 'From').fill('Shanghai');
+    await field(page, 'To').fill('Beijing');
+    await field(page, 'Date').fill(date);
+    await button(page, 'Search').click();
+    const results = page.getByRole('region', { name: 'Travel dates', exact: true });
+    const error = page.getByRole('alert');
+    await results.or(error).waitFor();
+    const observation = { date, resultsOpened: await results.isVisible(),
+      displayedDate: await field(page, 'Date').inputValue(),
+      message: await error.isVisible() ? await error.innerText() : null };
+    evidence.searches.push(observation);
+    if (date !== dates[2]) {
+      assert.ok(observation.resultsOpened && observation.displayedDate === date, 'Valid date control failed.');
+    }
+  }
+  await screenshot(page, '04-july-32.png');
+  evidence.expected = 'Search rejects a nonexistent date before displaying train results.';
+  assert.equal(evidence.searches[2].resultsOpened, false, 'Search opened results for July 32.');
+}
+
+async function popularStations(page, evidence) {
+  await page.goto(baseURL);
+  const from = field(page, 'From');
+  await from.fill('');
+  const selector = page.getByRole('dialog', { name: 'From station selector' });
+  const tab = name => selector.getByRole('tab', { name, exact: true });
+  const beijing = button(selector, 'Beijing (北京)');
+  await tab('ABCDE').click();
+  await beijing.click();
+  assert.equal(await from.inputValue(), 'Beijing');
+  await from.fill('');
+  await tab('Popular').click();
+  assert.equal(await tab('Popular').getAttribute('aria-selected'), 'true');
+  evidence.popular = await selector.innerText();
+  evidence.beijingButtons = await beijing.count();
+  await screenshot(page, '05-popular.png');
+  evidence.expected = 'Beijing can be selected from Popular and fills From with Beijing.';
+  assert.equal(evidence.beijingButtons, 1, 'The Popular tab has no selectable Beijing.');
+  await beijing.click();
+  assert.equal(await from.inputValue(), 'Beijing');
+}
+
+async function registrationCalendars(page, evidence) {
+  await page.goto(baseURL);
+  await link(page, 'Register').click();
+  await field(page, 'Nationality').waitFor();
+  const body = page.locator('body');
+  const snapshot = async () => (await body.ariaSnapshot()).replaceAll(' [active]', '');
+  evidence.fields = [];
+  for (const [label, file] of [['Passport expiration date', 'expiry'], ['Date of birth', 'birth']]) {
+    await field(page, 'Name').click();
+    const before = await snapshot();
+    const input = field(page, label);
+    await input.click();
+    const container = input.locator('..');
+    const observation = { label, inputType: await input.getAttribute('type'),
+      fieldMarkup: await container.innerHTML(), newAccessibleContent: (await snapshot()) !== before };
+    evidence.fields.push(observation);
+    await screenshot(page, '06-' + file + '.png');
+    if (observation.inputType === 'date') {
+      await input.press('Alt+ArrowDown');
+      await input.press('Enter');
+      observation.selectedDate = await input.inputValue();
+    } else if (observation.newAccessibleContent) {
+      const day = page.getByRole('button', { name: /^(?:15|\d{4}-\d{2}-15)$/ }).first();
+      if (await day.isVisible() && await day.isEnabled()) {
+        await day.click();
+        observation.selectedDate = await input.inputValue();
+      }
+    }
+  }
+  // Diagnose the observed plain-text implementation. A changed widget needs a
+  // fresh interaction check before this test can classify its selection behavior.
+  const plainFields = evidence.fields.filter(f => f.inputType === 'text' && !f.newAccessibleContent &&
+    !/<(?:button|select|svg|img)\b|role=["'](?:button|dialog|grid)|aria-haspopup/i.test(f.fieldMarkup));
+  if (!plainFields.length && evidence.fields.some(f => !f.selectedDate)) {
+    throw new Error('Calendar controls changed. Verify both date selections using the manual procedure.');
+  }
+  evidence.expected = 'Both registration dates can be chosen using a date picker.';
+  assert.deepEqual(plainFields.map(f => f.label), [], 'Clicking the plain date inputs exposed no date choice.');
+}
+
 async function main() {
-  const cases = [['01', sameName], ['02', duplicatePassport], ['03', staleInventory]];
+  const cases = [['01', sameName], ['02', duplicatePassport], ['03', staleInventory],
+    ['04', impossibleDate], ['05', popularStations], ['06', registrationCalendars]];
   if (selectedCase && !cases.some(([id]) => id === selectedCase)) {
-    throw new Error('Select case 01, 02 or 03, or omit the argument to run all cases.');
+    throw new Error('Select a case from 01 through 06, or omit the argument to run all cases.');
   }
   await fs.mkdir(output, { recursive: true });
   const browser = await chromium.launch({ channel: process.env.BROWSER_CHANNEL || 'chrome', headless: true });

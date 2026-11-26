@@ -31,14 +31,8 @@
 
 预期步骤 6 同样出现 Passport number already exists.，新增表单保留，原乘客手机号继续为 `13800000043`。
 
-实际不同姓名的对照提交得到 HTTP 400 与重复护照错误。同姓名提交得到 HTTP 200、Passenger added successfully.，表单关闭。刷新后，原乘客手机号已变成 `13800000044`。记录数量仍为一条，但新增操作悄然改写了已有数据。[原始响应和前后行文本](assets/results.json)
+实际不同姓名的对照提交得到 HTTP 400 与重复护照错误。同姓名提交得到 HTTP 200、Passenger added successfully.，表单关闭。刷新后，原乘客手机号已变成 `13800000044`。记录数量仍为一条，但新增操作悄然改写了已有数据。
 
 ## 证据与复现命令
-
-![原乘客手机号](assets/02-before.png)
-
-![同名同护照提交后显示新增成功](assets/02-submit.png)
-
-![刷新后原手机号被更新](assets/02-after.png)
 
 按团队 README 安装依赖、启动应用并设置 BASE_URL 后执行 `node reproduce.cjs 02`。当前实现的断言在“同名提交返回重复护照错误”处失败。

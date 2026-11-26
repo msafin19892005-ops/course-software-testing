@@ -30,18 +30,8 @@
 
 预期步骤 7 显示 Sorry, there are no tickets available for the selected ticket class.，保留预订页并拒绝打开确认框。
 
-实际 B 已显示商务座 None left，但 A 仍使用 1 left 的旧快照，Place order 后打开了包含商务座乘客的确认框。点击 Confirm 后才收到 HTTP 400 和缺票错误。观察到的差异是库存校验延迟到确认提交阶段。[两个页面的余票、确认框状态与响应](assets/results.json)
+实际 B 已显示商务座 None left，但 A 仍使用 1 left 的旧快照，Place order 后打开了包含商务座乘客的确认框。点击 Confirm 后才收到 HTTP 400 和缺票错误。观察到的差异是库存校验延迟到确认提交阶段。
 
 ## 证据与复现命令
-
-![A 打开时商务座余票为一](assets/03-tab-a-before.png)
-
-![B 确认订单后进入锁座付款页](assets/03-tab-b-locked.png)
-
-![B 重新查询后商务座余票为零](assets/03-tab-b-no-seats.png)
-
-![A 仍打开商务座订单确认框](assets/03-tab-a-stale-confirmation.png)
-
-![Confirm 时服务器才返回缺票错误](assets/03-confirm-rejected-late.png)
 
 按团队 README 安装依赖、启动应用并设置 BASE_URL 后执行 `node reproduce.cjs 03`。脚本会完成取消清理，再在“售罄后 Place order 不应打开确认框”的断言处失败。
