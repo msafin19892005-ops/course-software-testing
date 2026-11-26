@@ -1,0 +1,185 @@
+{
+  "baseURL": "http://127.0.0.1:3000",
+  "startedAt": "2026-11-26T05:36:10.151Z",
+  "browser": "158.0.8127.38",
+  "cases": [
+    {
+      "id": "01",
+      "status": "FAIL",
+      "account": {
+        "username": "team14_01_e25df1c80f",
+        "passport": "P14315372",
+        "password": "Password123!"
+      },
+      "inputs": {
+        "name": "Team14 Same Name",
+        "first": "P14774697",
+        "second": "P14929219"
+      },
+      "before": [
+        "\n      \n      Team14 Same Name\n      Foreign passport\n      P14774697\n      13800000043\n      Delete\n    "
+      ],
+      "after": [
+        "\n      \n      Team14 Same Name\n      Foreign passport\n      P14929219\n      13800000043\n      Delete\n    "
+      ],
+      "expected": "Both distinct passports remain as separate persistent passenger rows.",
+      "message": "The first passenger disappeared after adding another passenger with the same name.\n\n0 !== 1\n"
+    },
+    {
+      "id": "02",
+      "status": "FAIL",
+      "account": {
+        "username": "team14_02_946d301c92",
+        "passport": "P14966452",
+        "password": "Password123!"
+      },
+      "inputs": {
+        "name": "Team14 Duplicate",
+        "passport": "P14758991",
+        "originalMobile": "13800000043",
+        "attemptedMobile": "13800000044"
+      },
+      "before": [
+        "\n      \n      Team14 Duplicate\n      Foreign passport\n      P14758991\n      13800000043\n      Delete\n    "
+      ],
+      "control": {
+        "status": 400,
+        "body": {
+          "error": "Passport number already exists."
+        }
+      },
+      "duplicate": {
+        "status": 200,
+        "body": {
+          "message": "Passenger added successfully.",
+          "id": 59,
+          "now": "2026-07-21T00:06:16.131661+08:00"
+        }
+      },
+      "dialogVisible": false,
+      "after": [
+        "\n      \n      Team14 Duplicate\n      Foreign passport\n      P14758991\n      13800000044\n      Delete\n    "
+      ],
+      "expected": "Duplicate passport is rejected, form remains, original mobile remains unchanged.",
+      "message": "An identical name bypassed the duplicate-passport error and updated the existing passenger.\n+ actual - expected\n\n+ undefined\n- 'Passport number already exists.'\n"
+    },
+    {
+      "id": "03",
+      "status": "FAIL",
+      "account": {
+        "username": "team14_03_1273bbee4d",
+        "passport": "P14959958",
+        "password": "Password123!"
+      },
+      "inputs": {
+        "name": "Team14 Waiting",
+        "passport": "P14813181",
+        "lockingName": "Team14 Locking",
+        "lockingPassport": "P14461516",
+        "train": "G1001",
+        "date": "2026-07-22",
+        "ticketClass": "Business-class seat"
+      },
+      "initialFare": "Train Information:\n(The information of remaining tickets is for reference only.)\nG1001\nJuly 22, 2026 (Wednesday)\nShanghai Hongqiao (上海)\n08:00\n5h0m\n⟶\nBeijing South (北京)\n13:00\nbusiness-class seat ( ￥1870.0 ) 32% off 1 left\nfirst-class seat ( ￥967.0 ) 24% off None left\nsecond-class seat ( ￥576.0 ) 27% off None left\nstanding ticket ( ￥576.0 ) 27% off Enough left\n\nThe sleeper ticket prices shown on the page are all upper berth. Actual prices vary among different berths.",
+      "lockingOrder": {
+        "id": 4,
+        "order_no": "E20260721000617D9AF",
+        "train_number": "G1001",
+        "from_city": "Shanghai",
+        "to_city": "Beijing",
+        "from_station": "Shanghai Hongqiao",
+        "to_station": "Beijing South",
+        "departure_date": "2026-07-22",
+        "departure_time": "08:00",
+        "arrival_time": "13:00",
+        "duration": 300,
+        "status": "unpaid",
+        "status_label": "Unpaid",
+        "created_at": "2026-07-21T00:06:17.544967+08:00",
+        "booking_date": "2026-07-21",
+        "total": 1870,
+        "total_text": "￥1870.00",
+        "payment_deadline": "2026-07-21T00:26:17.544967+08:00",
+        "refund_deadline": "2026-07-22T00:00:00+08:00",
+        "remaining_seconds": 1200,
+        "refundable": false,
+        "passengers": [
+          {
+            "name": "Team14 Locking",
+            "id_type": "Foreign passport",
+            "id_number": "P14461516",
+            "passport": "P14461516",
+            "nationality": "China",
+            "ticket_class": "business",
+            "ticket_class_label": "Business-class seat",
+            "ticket_type": "Adult",
+            "price": 1870,
+            "price_text": "￥1870.00",
+            "coach": "01",
+            "seat": "01A",
+            "seat_berth": "Window"
+          }
+        ]
+      },
+      "currentFare": "Train Information:\n(The information of remaining tickets is for reference only.)\nG1001\nJuly 22, 2026 (Wednesday)\nShanghai Hongqiao (上海)\n08:00\n5h0m\n⟶\nBeijing South (北京)\n13:00\nbusiness-class seat ( ￥1870.0 ) 32% off None left\nfirst-class seat ( ￥967.0 ) 24% off None left\nsecond-class seat ( ￥576.0 ) 27% off None left\nstanding ticket ( ￥576.0 ) 27% off Enough left\n\nThe sleeper ticket prices shown on the page are all upper berth. Actual prices vary among different berths.",
+      "confirmationOpened": true,
+      "oldTabText": "中国铁路12306\n12306 CHINA RAILWAY\nteam14_03_1273bbee4d\n|\nSign Out\nMy 12306\n简体中文\nContact us\nHome\nBooking\n⌄\nTravel guide\n⌄\nHOME > Booking\nTrain Information:\n(The information of remaining tickets is for reference only.)\nG1001\nJuly 22, 2026 (Wednesday)\nShanghai Hongqiao (上海)\n08:00\n5h0m\n⟶\nBeijing South (北京)\n13:00\nbusiness-class seat ( ￥1870.0 ) 32% off 1 left\nfirst-class seat ( ￥967.0 ) 24% off None left\nsecond-class seat ( ￥576.0 ) 27% off None left\nstanding ticket ( ￥576.0 ) 27% off Enough left\n\nThe sleeper ticket prices shown on the page are all upper berth. Actual prices vary among different berths.\n\nPassenger Information:\nTeam14 Account\nForeign passport · P14959958\nAccount holder\nTeam14 Waiting\nForeign passport · P14813181\nTeam14 Locking\nForeign passport · P14461516\n\nSelect a frequent passenger to add one booking row. The passenger record itself is not changed.\n\nTicket class\tTicket type\tName\tID type\tID number\tNationality\tOperation\n\nBusiness-class seat\nFirst-class seat\nSecond-class seat\nStanding ticket\n\t\nAdult\nChild\n\tTeam14 Waiting\tForeign passport\tP14813181\tChina\tDelete\nTips\n\nA valid ID can be used to purchase only one ticket for the same train on the same date of travel, except for EMU sleeping trains.\n\nI have read and agree to the Terms of Service\nPrevious step\nPlace order\n\nCOPYRIGHT©2008-2025 CHINA ACADEMY OF RAILWAY SCIENCES CORPORATION LIMITED, ALL RIGHTS RESERVED\n\n京公网安备 11010802038392号 | 京ICP备05020493号-4 | ICP证: 京B2-20202537\n\nPrivacy Policy | Cookie Statement\n\nPlease confirm the following information.\n×\nG1001\nJuly 22, 2026 (Wednesday)\nShanghai Hongqiao (上海) 08:00\n⟶\nBeijing South (北京) 13:00\nNumber\tSeat type\tTicket type\tName\tID type\tID number\tNationality\n1\tBusiness-class seat\tAdult\tTeam14 Waiting\tForeign passport\tP14813181\tChina\nEdit\nConfirm",
+      "confirmAttempt": {
+        "status": 400,
+        "body": {
+          "error": "Sorry, there are no tickets available for the selected ticket class."
+        }
+      },
+      "cleanup": {
+        "status": 200,
+        "body": {
+          "order": {
+            "id": 4,
+            "order_no": "E20260721000617D9AF",
+            "train_number": "G1001",
+            "from_city": "Shanghai",
+            "to_city": "Beijing",
+            "from_station": "Shanghai Hongqiao",
+            "to_station": "Beijing South",
+            "departure_date": "2026-07-22",
+            "departure_time": "08:00",
+            "arrival_time": "13:00",
+            "duration": 300,
+            "status": "cancelled",
+            "status_label": "Cancelled",
+            "created_at": "2026-07-21T00:06:17.544967+08:00",
+            "booking_date": "2026-07-21",
+            "total": 1870,
+            "total_text": "￥1870.00",
+            "payment_deadline": "2026-07-21T00:26:17.544967+08:00",
+            "refund_deadline": "2026-07-22T00:00:00+08:00",
+            "remaining_seconds": 1200,
+            "refundable": false,
+            "passengers": [
+              {
+                "name": "Team14 Locking",
+                "id_type": "Foreign passport",
+                "id_number": "P14461516",
+                "passport": "P14461516",
+                "nationality": "China",
+                "ticket_class": "business",
+                "ticket_class_label": "Business-class seat",
+                "ticket_type": "Adult",
+                "price": 1870,
+                "price_text": "￥1870.00",
+                "coach": "01",
+                "seat": "01A",
+                "seat_berth": "Window"
+              }
+            ]
+          },
+          "message": "Order cancelled successfully.",
+          "now": "2026-07-21T00:06:18.127424+08:00"
+        }
+      },
+      "expected": "Place order rejects the now sold-out class without opening confirmation.",
+      "message": "The old tab opened confirmation for a class whose only seat was already locked.\n\ntrue !== false\n"
+    }
+  ],
+  "revision": "024c2bcef427351918168a0eb414cf907822b4ac"
+}
