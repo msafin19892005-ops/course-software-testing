@@ -8,6 +8,8 @@
 | [02 同名同护照绕过重复校验](white-box-02.md) | 白盒分支测试 | REQ-7.2 | 重复添加成功，并覆盖原乘客手机号 |
 | [03 余票耗尽后旧标签页仍打开确认框](white-box-03.md) | 白盒状态变化路径测试 | REQ-8.3.2 | Place order 使用旧余票快照放行，缺票错误延迟到 Confirm |
 
+本组另追加 [Keep 用例 04、05](../../../keep/test/team-14/README.md) 与 [PrestaShop 用例 06](../../../prestashop/test/team-14/README.md)，共六条候选测试。各用例按对应应用需求和基线测试检查覆盖差异。
+
 预期行为依据课程提供的 [requirements.yaml](../../requirements/requirements.yaml)。实际行为来自提供实现的浏览器操作与截图。参考系统的运行地址尚未获得，目前的对照依据是需求契约。用例 01 的两条记录应同时保留，依据新增持久化乘客、按护照判重的契约推导。有效性和计分由课程助教审核。
 
 ## 环境与数据准备
@@ -52,4 +54,4 @@ npm.cmd test
 
 用例 03 增加同一登录会话、两个标签页、两个不同乘客下的余票变化，并检查 Place order 阶段的确认框状态。相关基线测试均在单个页面内准备、选择并提交。
 
-PR 标题使用 `[12306][Team 14] Add fault-revealing tests`，目标为 `code-philia/course-software-testing` 的 `main`。分支为 `team-14-fault-revealing-tests`。本目录包含提交文档、自动化和证据。
+PR 标题使用 `[12306/Keep/PrestaShop][Team 14] Add fault-revealing tests`，目标为 `code-philia/course-software-testing` 的 `main`。分支为 `team-14-fault-revealing-tests`。各应用的 test/team-14 目录包含对应提交文档、自动化和证据。
